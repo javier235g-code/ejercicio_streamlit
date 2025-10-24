@@ -1,8 +1,14 @@
 import pandas as pd
 import streamlit as st
+from pandas import Series
 from sqlalchemy.exc import OperationalError  # Para capturar errores comunes de SQL
 import os  # Necesario para obtener la fecha de modificación del archivo
 from datetime import datetime
+try:
+    import reverse_geocoder as rg
+except ImportError:
+    # Si no está instalada, rg será None. Lo manejaremos más adelante.
+    rg = None
 
 
 def actualizar_csv_con_st_connection(
@@ -109,7 +115,48 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
         if df.empty:
             st.warning("El archivo CSV está vacío.")
             return None
+        # 1. Identificar filas donde 'region' está vacía (NaN)
+        # (usamos .isna() que detecta NaN, y .fillna('') por si acaso)
+        df['region'] = df['region'].fillna(pd.NA)
+        missing_region_mask = df['region'].isna()
 
+        # 2. Comprobar si hay alguna región que rellenar
+        if missing_region_mask.any():
+
+            # 3. Comprobar si la biblioteca 'reverse_geocoder' está disponible
+            if rg is None:
+                st.error("Biblioteca 'reverse_geocoder' no encontrada.")
+                st.warning("Para rellenar regiones vacías, instala la biblioteca: pip install reverse_geocoder")
+                # Rellenar con 'Desconocida' para que el groupby funcione
+                df['region'] = df['region'].fillna('Desconocida')
+            else:
+                st.info(f"Detectadas {missing_region_mask.sum()} regiones vacías. Rellenando...")
+
+                try:
+                    # 4. Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
+                    coords = list(zip(
+                        df.loc[missing_region_mask, 'latitud'],
+                        df.loc[missing_region_mask, 'longitud']
+                    ))
+
+                    if coords:
+                        # 5. Realizar la búsqueda (es offline y rápida)
+                        results = rg.search(coords)  # Retorna una lista de dicts
+
+                        # 6. Extraer el nombre de la región ('admin1' en España es la Comunidad Autónoma)
+                        # ej: 'Madrid', 'Andalusia', 'Catalonia'
+                        filled_regions = [res['admin1'] for res in results]
+
+                        # 7. Asignar los nuevos valores de vuelta al DataFrame
+                        df.loc[missing_region_mask, 'region'] = filled_regions
+
+                except Exception as e:
+                    st.error(f"Error durante la geocodificación: {e}")
+                    df['region'] = df['region'].fillna('Error Geocodificación')
+
+        # Rellenar cualquier posible vacío restante (ej. coordenadas en el océano)
+        df['region'] = df['region'].fillna('Desconocida')
+        
         # --- Procesamiento de Fechas ---
         # Convertir la columna de fecha/hora a objeto datetime de pandas
         df['fecha_hora_descarga'] = pd.to_datetime(df['fecha_hora_descarga'])
@@ -182,10 +229,10 @@ if df_principal is None:
 st.divider()
 
 # Meta 4: Resumen por Zona
-st.header("Resumen por Zona")
+st.header("Resumen por Región")
 
 # Agrupar por 'zona'
-df_zona = df_principal.groupby('zona').agg(
+df_zona = df_principal.groupby('region').agg(
     # Contar todos los registros (id) [cite: 1]
     numero_descargas=('id', 'count'),
     # Contar cuántos 'id_descargado' únicos hay [cite: 1]
@@ -198,9 +245,9 @@ total_unicas_global = df_principal['id_descargado'].nunique()  # Total de IDs ú
 
 # Crear la fila de total como un DataFrame
 total_row = pd.DataFrame({
-    'zona': ['**Total General**'],  # Nombre para la fila de total
-    'numero_descargas': [total_descargas_global],
-    'descargas_unicas': [total_unicas_global]
+    'Región': ['**Total General**'],  # Nombre para la fila de total
+    'Descargas': [total_descargas_global],
+    'Descargas Únicas': [total_unicas_global]
 })
 
 # Concatenar el resumen por zona con la fila de total
