@@ -1,9 +1,8 @@
-# main_app.py
-# Importaciones necesarias
 import pandas as pd
 import streamlit as st
-# Ya NO necesitamos 'mysql.connector' directamente
 from sqlalchemy.exc import OperationalError  # Para capturar errores comunes de SQL
+import os  # Necesario para obtener la fecha de modificación del archivo
+from datetime import datetime
 
 
 def actualizar_csv_con_st_connection(
@@ -12,7 +11,7 @@ def actualizar_csv_con_st_connection(
         archivo_csv: str = "data.csv"
 ):
     """
-    Conecta a MySQL usando el método moderno 'st.connection' y actualiza un CSV.
+    Conecta a MySQL usando el metodo moderno st.connection y actualiza un CSV.
 
     Args:
         nombre_conexion_st (str): El nombre de la conexión definida en
@@ -80,7 +79,59 @@ def actualizar_csv_con_st_connection(
         return False
 
 
-# --- Ejemplo de uso en la aplicación Streamlit ---
+def get_last_update_time(archivo_csv: str) -> str:
+    """
+    Obtiene la fecha de última modificación de un archivo en formato legible.
+    """
+    try:
+        # Obtener el timestamp (en segundos) de la última modificación
+        timestamp = os.path.getmtime(archivo_csv)
+        # Convertir el timestamp a un objeto datetime
+        mod_time = datetime.fromtimestamp(timestamp)
+        # Formatear la fecha para mostrarla
+        return mod_time.strftime("%Y-%m-%d %H:%M:%S")
+    except FileNotFoundError:
+        return "Archivo no encontrado"
+    except Exception as e:
+        return f"Error al leer fecha: {e}"
+
+
+@st.cache_data  # Usamos cache de Streamlit
+def load_data(archivo_csv: str): #-> pd.DataFrame | None:
+    """
+    Carga y procesa el archivo CSV local.
+    Se cachea para mejorar el rendimiento en interacciones (como filtros).
+    La caché se limpiará manualmente si el botón de actualizar se pulsa.
+    """
+    try:
+        df = pd.read_csv(archivo_csv)
+
+        if df.empty:
+            st.warning("El archivo CSV está vacío.")
+            return None
+
+        # --- Procesamiento de Fechas ---
+        # Convertir la columna de fecha/hora a objeto datetime de pandas
+        df['fecha_hora_descarga'] = pd.to_datetime(df['fecha_hora_descarga'])
+
+        # Crear una nueva columna 'fecha' (solo el día) para agrupar y filtrar
+        df['fecha'] = df['fecha_hora_descarga'].dt.date
+
+        return df
+
+    except FileNotFoundError:
+        # Esto es normal si es la primera vez que se ejecuta
+        st.info(f"No se encontró el archivo '{archivo_csv}'. "
+                "Pulsa el botón 'Actualizar' para generarlo desde la DB.")
+        return None
+    except pd.errors.EmptyDataError:
+        st.warning(f"El archivo '{archivo_csv}' está vacío.")
+        return None
+    except Exception as e:
+        st.error(f"Error crítico al cargar o procesar el CSV: {e}")
+        return None
+
+# --- ESTRUCTURA PRINCIPAL DE LA APLICACIÓN ---
 
 st.title("Panel de Control")
 
@@ -89,6 +140,8 @@ MI_CONSULTA = "SELECT * FROM descargas;"
 MI_CONEXION_SECRETS = "db_mysql"  # Debe coincidir con [connections.db_mysql] en secrets.toml
 ARCHIVO_SALIDA = "data.csv"
 
+# --- 1. Botón de Actualización (Lógica existente) ---
+# Colocamos el botón primero
 if st.button(f"Actualizar Registros Base de Datos"):
 
     with st.spinner("Ejecutando consulta y actualizando CSV..."):
@@ -101,9 +154,117 @@ if st.button(f"Actualizar Registros Base de Datos"):
 
         if exito:
             st.success("Proceso completado.")
-            # Opcional: Mostrar los datos actualizados
-            try:
-                df_preview = pd.read_csv(ARCHIVO_SALIDA)
-                st.dataframe(df_preview.head())
-            except FileNotFoundError:
-                st.warning("El archivo CSV no se encontró para la vista previa.")
+            # ¡IMPORTANTE!
+            # Limpiamos la caché de la función 'load_data'.
+            # Esto fuerza a Streamlit a releer el archivo CSV
+            # modificado en la siguiente línea (load_data).
+            st.cache_data.clear()
+        # 'else' (fallo) ya es manejado por la función con st.error
+
+# --- 2. Carga y Visualización de Datos (NUEVA LÓGICA) ---
+
+# Mostrar estado de carga y fecha de actualización (Metas 1 y 2)
+st.subheader("Estado de los Datos Locales")
+with st.spinner(f"Cargando datos locales desde '{ARCHIVO_SALIDA}'..."):
+    # Intentamos cargar los datos (usará la caché si no se pulsó el botón)
+    df_principal = load_data(ARCHIVO_SALIDA)
+
+    # Obtenemos y mostramos la fecha de modificación del archivo
+    last_update = get_last_update_time(ARCHIVO_SALIDA)
+    st.caption(f"Última actualización del fichero: **{last_update}**")
+
+# Si la carga falla (ej. no existe el archivo), detenemos la ejecución aquí
+if df_principal is None:
+    st.stop()
+
+# --- 3. Análisis y Visualizaciones (Metas 3, 4, 5, 6) ---
+
+st.divider()
+
+# Meta 4: Resumen por Zona
+st.header("Resumen por Zona")
+
+# Agrupar por 'zona'
+df_zona = df_principal.groupby('zona').agg(
+    # Contar todos los registros (id) [cite: 1]
+    numero_descargas=('id', 'count'),
+    # Contar cuántos 'id_descargado' únicos hay [cite: 1]
+    descargas_unicas=('id_descargado', 'nunique')
+).reset_index()
+
+# Calcular totales globales (antes de añadir la fila de total)
+total_descargas_global = df_principal.shape[0]  # Total de filas
+total_unicas_global = df_principal['id_descargado'].nunique()  # Total de IDs únicos
+
+# Crear la fila de total como un DataFrame
+total_row = pd.DataFrame({
+    'zona': ['**Total General**'],  # Nombre para la fila de total
+    'numero_descargas': [total_descargas_global],
+    'descargas_unicas': [total_unicas_global]
+})
+
+# Concatenar el resumen por zona con la fila de total
+df_zona_final = pd.concat([df_zona, total_row], ignore_index=True)
+
+# Mostrar el DataFrame
+st.dataframe(df_zona_final, use_container_width=True)
+
+st.divider()
+
+# Metas 5 y 6: Análisis por Fecha
+st.header("Análisis por Fecha")
+
+# Definir fechas mínimas y máximas para el selector (basado en la columna 'fecha')
+min_date = df_principal['fecha'].min()
+max_date = df_principal['fecha'].max()
+
+# Meta 5 (parcial): Calendario para seleccionar rango
+selected_range = st.date_input(
+    "Seleccione un rango de fechas",
+    (min_date, max_date),  # Valor por defecto (rango completo)
+    min_value=min_date,
+    max_value=max_date,
+    key="date_range_selector"
+)
+
+# Asegurarse de que el selector devolvió un rango válido (inicio y fin)
+if len(selected_range) == 2:
+    start_date, end_date = selected_range
+
+    # Filtrar el DF principal según el rango seleccionado
+    df_filtrado_fecha = df_principal[
+        (df_principal['fecha'] >= start_date) &
+        (df_principal['fecha'] <= end_date)
+        ]
+
+    # Comprobar si hay datos en el rango seleccionado
+    if df_filtrado_fecha.empty:
+        st.warning("No hay datos en el rango de fechas seleccionado.")
+    else:
+        # Meta 5 (final): DF de descargas ÚNICAS por fecha
+        st.subheader("Descargas Únicas por Día (en rango)")
+        df_fecha_agg = df_filtrado_fecha.groupby('fecha').agg(
+            numero_descargas_unicas=('id_descargado', 'nunique')
+        ).reset_index()
+
+        st.dataframe(df_fecha_agg, use_container_width=True)
+
+        # Meta 6: Histograma de descargas TOTALES por día
+        st.subheader("Histograma de Descargas Totales por Día (en rango)")
+
+        # Agregamos para el histograma (contando 'id' totales, no únicos)
+        df_hist = df_filtrado_fecha.groupby('fecha').agg(
+            numero_descargas_totales=('id', 'count')
+        ).reset_index()
+
+        # Pintar el histograma
+        st.bar_chart(
+            df_hist,
+            x='fecha',
+            y='numero_descargas_totales',
+            use_container_width=True
+        )
+
+else:
+    # Caso por si el selector de fecha no devuelve un rango (ej. solo 1 día)
+    st.info("Por favor, seleccione un rango de fechas válido (inicio y fin).")

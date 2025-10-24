@@ -1,0 +1,128 @@
+id,fecha_hora_descarga,region,zona,longitud,latitud,id_descargado
+1,2025-07-07 08:51:39,Madrid,Europe/Madrid,-3.6691,40.43,IC018349_Certificado_Perdia_signed.env
+2,2025-09-21 16:55:47,Andalusia,Europe/Madrid,-3.6095,37.1918,IC016711_Certificado_Perdia_signed.env
+3,2025-09-22 12:56:19,Catalonia,Europe/Madrid,2.1606,41.3891,IC019913_Certificado_Perdia_signed.env
+4,2025-09-23 11:59:43,Canary Islands,Atlantic/Canary,-15.4098,28.1,IC015011_Certificado_Perdia_signed.env
+5,2025-09-23 11:59:51,Canary Islands,Atlantic/Canary,-15.4098,28.1,IC015011_Certificado_Perdia_signed.env
+6,2025-09-23 12:37:58,Canary Islands,Atlantic/Canary,-15.4098,28.1,IC015011_Certificado_Perdia_signed.env
+7,2025-09-24 12:00:21,Galicia,Europe/Madrid,-7.654,43.4432,IC018646_Certificado_Perdia_signed.env
+8,2025-09-24 15:21:55,,Europe/Madrid,-3.684,40.4172,IC013883_Certificado_Perdia_signed.env
+9,2025-09-30 13:55:02,Basque Country,Europe/Madrid,-3.0145,43.3473,IC001186_Certificado_Perdia_signed.env
+10,2025-09-30 13:55:12,Basque Country,Europe/Madrid,-3.0145,43.3473,IC001186_Certificado_Perdia_signed.env
+11,2025-09-30 14:04:04,Basque Country,Europe/Madrid,-3.0145,43.3473,IC006148_Certificado_Perdia_signed.env
+12,2025-09-30 16:21:18,Andalusia,Europe/Madrid,-5.9208,37.2866,IC009023_Certificado_Perdia_signed.env
+13,2025-09-30 19:55:28,Basque Country,Europe/Madrid,-2.9238,43.2626,IC002079_Certificado_Perdia_signed.env
+14,2025-09-30 20:19:30,Madrid,Europe/Madrid,-3.8137,40.4441,IC021764_Certificado_Perdia_signed.env
+15,2025-09-30 20:33:12,Madrid,Europe/Madrid,-3.646,40.4596,IC004855_Certificado_Perdia_signed.env
+16,2025-10-02 13:44:38,Basque Country,Europe/Madrid,-2.9209,43.2481,IC000367_Certificado_Perdia_signed.env
+17,2025-10-02 15:08:07,Madrid,Europe/Madrid,-3.646,40.4596,IC000666_Certificado_Perdia_signed.env
+18,2025-10-02 17:57:43,Madrid,Europe/Madrid,-3.8137,40.4441,IC000060_Certificado_Perdia_signed.env
+19,2025-10-02 19:52:39,Basque Country,Europe/Madrid,-3.0167,43.3226,IC005095_Certificado_Perdia_signed.env
+20,2025-10-02 19:52:45,Basque Country,Europe/Madrid,-3.0167,43.3226,IC005095_Certificado_Perdia_signed.env
+21,2025-10-02 19:53:26,Basque Country,Europe/Madrid,-3.0167,43.3226,IC005095_Certificado_Perdia_signed.env
+22,2025-10-02 20:11:23,Basque Country,Europe/Madrid,-3.0016,43.2982,IC014494_Certificado_Perdia_signed.env
+23,2025-10-02 20:40:28,Valencia,Europe/Madrid,-0.3771,39.4676,IC008543_Certificado_Perdia_signed.env
+24,2025-10-02 21:09:05,Madrid,Europe/Madrid,-3.5551,40.4232,IC009951_Certificado_Perdia_signed.env
+25,2025-10-02 21:10:23,Valencia,Europe/Madrid,-0.3771,39.4676,IC002692_Certificado_Perdia_signed.env
+26,2025-10-03 12:26:54,Madrid,Europe/Madrid,-3.7571,40.3257,IC007436_Certificado_Perdia_signed.env
+27,2025-10-03 12:36:23,Madrid,Europe/Madrid,-3.6099,40.3989,IC022181_Certificado_Perdia_signed.env
+28,2025-10-03 12:44:16,Madrid,Europe/Madrid,-3.6099,40.3989,IC021977_Certificado_Perdia_signed.env
+29,2025-10-03 14:37:02,Basque Country,Europe/Madrid,-3.0167,43.3226,IC005095_Certificado_Perdia_signed.env
+30,2025-10-03 19:34:19,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+31,2025-10-03 19:34:21,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+32,2025-10-03 19:34:57,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+33,2025-10-03 19:34:58,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+34,2025-10-03 19:37:59,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+35,2025-10-03 19:45:08,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+36,2025-10-03 19:45:09,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+37,2025-10-03 19:45:10,Aragon,Europe/Madrid,-0.4124,42.1371,IC011574_Certificado_Perdia_signed.env
+38,2025-10-04 21:20:13,Castille and León,Europe/Madrid,-5.5575,42.6445,IC021809_Certificado_Perdia_signed.env
+39,2025-10-05 20:28:27,Madrid,Europe/Madrid,-3.684,40.4318,IC013265_Certificado_Perdia_signed.env
+40,2025-10-05 20:58:55,Madrid,Europe/Madrid,-3.684,40.4318,IC019287_Certificado_Perdia_signed.env
+41,2025-10-06 11:37:29,Madrid,Europe/Madrid,-3.8683,40.4683,IC011891_Certificado_Perdia_signed.env
+42,2025-10-06 11:44:48,Basque Country,Europe/Madrid,-3.0016,43.2982,IC017947_Certificado_Perdia_signed.env
+43,2025-10-06 11:46:46,Valencia,Europe/Madrid,-0.4825,38.342,IC009492_Certificado_Perdia_signed.env
+44,2025-10-06 11:51:09,Madrid,Europe/Madrid,-3.8683,40.4683,IC022479_Certificado_Perdia_signed.env
+45,2025-10-06 11:51:27,Valencia,Europe/Madrid,-0.4825,38.342,IC011272_Certificado_Perdia_signed.env
+46,2025-10-06 11:54:41,Basque Country,Europe/Madrid,-3.0016,43.2982,IC014724_Certificado_Perdia_signed.env
+47,2025-10-06 11:55:51,Basque Country,Europe/Madrid,-3.0016,43.2982,IC010276_Certificado_Perdia_signed.env
+48,2025-10-06 12:07:04,Basque Country,Europe/Madrid,-3.0016,43.2982,IC022940_Certificado_Perdia_signed.env
+49,2025-10-06 12:51:38,Valencia,Europe/Madrid,-0.3771,39.4676,IC018035_Certificado_Perdia_signed.env
+50,2025-10-06 12:54:15,Valencia,Europe/Madrid,-0.3771,39.4676,IC018035_Certificado_Perdia_signed.env
+51,2025-10-06 12:58:18,Madrid,Europe/Madrid,-3.7157,40.4097,IC022255_Certificado_Perdia_signed.env
+52,2025-10-06 14:22:08,Madrid,Europe/Madrid,-3.684,40.4318,IC016917_Certificado_Perdia_signed.env
+53,2025-10-07 17:16:32,Basque Country,Europe/Madrid,-2.9238,43.2626,IC001083_Certificado_Perdia_signed.env
+54,2025-10-07 19:54:56,Madrid,Europe/Madrid,-3.7188,40.394,IC015485_Certificado_Perdia_signed.env
+55,2025-10-07 22:03:33,Madrid,Europe/Madrid,-3.8185,40.3425,IC013735_Certificado_Perdia_signed.env
+56,2025-10-07 22:12:38,Madrid,Europe/Madrid,-3.8185,40.3425,IC020509_Certificado_Perdia_signed.env
+57,2025-10-07 22:17:29,Madrid,Europe/Madrid,-3.8185,40.3425,IC017914_Certificado_Perdia_signed.env
+58,2025-10-08 09:48:17,Madrid,Europe/Madrid,-3.684,40.4318,IC016282_Certificado_Perdia_signed.env
+59,2025-10-08 10:45:05,Castille and León,Europe/Madrid,-4.1089,40.9312,IC015781_Certificado_Perdia_signed.env
+60,2025-10-08 11:00:47,Andalusia,Europe/Madrid,-5.9787,37.3834,IC001223_Certificado_Perdia_signed.env
+61,2025-10-08 11:02:34,Castille and León,Europe/Madrid,-4.7423,41.6198,IC009941_Certificado_Perdia_signed.env
+62,2025-10-08 11:47:01,La Rioja,Europe/Madrid,-2.4675,42.4582,IC004845_Certificado_Perdia_signed.env
+63,2025-10-08 11:49:13,La Rioja,Europe/Madrid,-2.4675,42.4582,IC004845_Certificado_Perdia_signed.env
+64,2025-10-08 13:29:35,Madrid,Europe/Madrid,-3.5971,40.3655,IC022620_Certificado_Perdia_signed.env
+65,2025-10-08 13:30:04,Valencia,Europe/Madrid,-0.1148,38.5306,IC022174_Certificado_Perdia_signed.env
+66,2025-10-08 14:04:55,Castille and León,Europe/Madrid,-4.1089,40.9312,IC015780_Certificado_Perdia_signed.env
+67,2025-10-08 16:39:03,Castille and León,Europe/Madrid,-4.7331,41.6592,IC009476_Certificado_Perdia_signed.env
+68,2025-10-08 17:37:17,Madrid,Europe/Madrid,-3.6166,40.1621,IC004501_Certificado_Perdia_signed.env
+69,2025-10-08 17:42:00,Madrid,Europe/Madrid,-3.6166,40.1621,IC004395_Certificado_Perdia_signed.env
+70,2025-10-08 17:52:15,Madrid,Europe/Madrid,-3.7571,40.3257,IC008631_Certificado_Perdia_signed.env
+71,2025-10-08 17:52:24,Madrid,Europe/Madrid,-3.7571,40.3257,IC008631_Certificado_Perdia_signed.env
+72,2025-10-08 17:52:41,Madrid,Europe/Madrid,-3.7571,40.3257,IC008631_Certificado_Perdia_signed.env
+73,2025-10-08 18:47:50,Basque Country,Europe/Madrid,-3.0016,43.2982,IC021392_Certificado_Perdia_signed.env
+74,2025-10-08 20:03:06,Madrid,Europe/Madrid,-3.6989,40.3482,IC021826_Certificado_Perdia_signed.env
+75,2025-10-08 22:31:15,Valencia,Europe/Madrid,-0.3771,39.4676,IC012492_Certificado_Perdia_signed.env
+76,2025-10-08 22:31:35,Valencia,Europe/Madrid,-0.3771,39.4676,IC012492_Certificado_Perdia_signed.env
+77,2025-10-09 12:21:41,Castille and León,Europe/Madrid,-4.7439,41.6385,IC013534_Certificado_Perdia_signed.env
+78,2025-10-09 12:28:39,Valencia,Europe/Madrid,-0.3771,39.4676,IC012563_Certificado_Perdia_signed.env
+79,2025-10-09 13:22:08,Castille and León,Europe/Madrid,-4.7142,41.6512,IC008762_Certificado_Perdia_signed.env
+80,2025-10-09 16:32:13,Madrid,Europe/Madrid,-3.694,40.4153,IC000956_Certificado_Perdia_signed.env
+81,2025-10-09 18:32:59,Madrid,Europe/Madrid,-3.8185,40.3425,IC003958_Certificado_Perdia_signed.env
+82,2025-10-09 18:46:46,Madrid,Europe/Madrid,-3.8185,40.3425,IC012664_Certificado_Perdia_signed.env
+83,2025-10-09 18:50:24,Valencia,Europe/Madrid,-0.3771,39.4676,IC013455_Certificado_Perdia_signed.env
+84,2025-10-09 20:04:15,Andalusia,Europe/Madrid,-4.6121,36.5473,IC000952_Certificado_Perdia_signed.env
+85,2025-10-10 18:13:40,Andalusia,Europe/Madrid,-3.6313,37.2014,IC017832_Certificado_Perdia_signed.env
+86,2025-10-10 18:34:07,Andalusia,Europe/Madrid,-3.6313,37.2014,IC017837_Certificado_Perdia_signed.env
+87,2025-10-10 18:57:09,Andalusia,Europe/Madrid,-3.6313,37.2014,IC018274_Certificado_Perdia_signed.env
+88,2025-10-10 19:14:32,Andalusia,Europe/Madrid,-3.6313,37.2014,IC018275_Certificado_Perdia_signed.env
+89,2025-10-11 10:28:19,Andalusia,Europe/Madrid,-5.9012,37.3944,IC019948_Certificado_Perdia_signed.env
+90,2025-10-11 11:05:23,Andalusia,Europe/Madrid,-5.9012,37.3944,IC019575_Certificado_Perdia_signed.env
+91,2025-10-11 19:28:38,Castille and León,Europe/Madrid,-4.7343,41.6526,IC014754_Certificado_Perdia_signed.env
+92,2025-10-11 19:29:27,Castille and León,Europe/Madrid,-4.7343,41.6526,IC014754_Certificado_Perdia_signed.env
+93,2025-10-11 19:41:11,Madrid,Europe/Madrid,-3.7945,40.3074,IC009039_Certificado_Perdia_signed.env
+94,2025-10-11 19:41:25,Madrid,Europe/Madrid,-3.7945,40.3074,IC009039_Certificado_Perdia_signed.env
+95,2025-10-11 19:58:58,Castille and León,Europe/Madrid,-4.7343,41.6526,IC014754_Certificado_Perdia_signed.env
+96,2025-10-11 19:59:14,Castille and León,Europe/Madrid,-4.7343,41.6526,IC014754_Certificado_Perdia_signed.env
+97,2025-10-12 20:47:06,,Europe/Madrid,-3.684,40.4172,IC001106_Certificado_Perdia_signed.env
+98,2025-10-13 10:44:07,Catalonia,Europe/Madrid,1.7227,41.2203,IC001193_Certificado_Perdia_signed.env
+99,2025-10-13 10:50:08,Catalonia,Europe/Madrid,1.7227,41.2203,IC002085_Certificado_Perdia_signed.env
+100,2025-10-13 12:18:38,Castille and León,Europe/Madrid,-4.7064,41.635,IC001161_Certificado_Perdia_signed.env
+101,2025-10-13 21:56:47,Madrid,Europe/Madrid,-3.8622,40.3221,IC002563_Certificado_Perdia_signed.env
+102,2025-10-13 22:01:06,Madrid,Europe/Madrid,-3.8622,40.3221,IC002563_Certificado_Perdia_signed.env
+103,2025-10-14 13:38:05,Valencia,Europe/Madrid,-0.3771,39.4676,IC012608_Certificado_Perdia_signed.env
+104,2025-10-15 17:54:32,Castille and León,Europe/Madrid,-4.7064,41.635,IC014401_Certificado_Perdia_signed.env
+105,2025-10-17 15:10:37,Andalusia,Europe/Madrid,-6.3595,36.6285,IC008067_Certificado_Perdia_signed.env
+106,2025-10-18 11:38:33,Madrid,Europe/Madrid,-3.711,40.4519,IC002471_Certificado_Perdia_signed.env
+107,2025-10-18 11:58:13,Madrid,Europe/Madrid,-3.711,40.4519,IC002471_Certificado_Perdia_signed.env
+108,2025-10-18 12:59:44,Madrid,Europe/Madrid,-3.711,40.4519,IC002471_Certificado_Perdia_signed.env
+109,2025-10-18 18:02:03,Madrid,Europe/Madrid,-3.701,40.4328,IC019940_Certificado_Perdia_signed.env
+110,2025-10-18 18:02:34,Madrid,Europe/Madrid,-3.701,40.4328,IC019940_Certificado_Perdia_signed.env
+111,2025-10-19 09:55:17,Principality of Asturias,Europe/Madrid,-5.922,43.5582,IC012415_Certificado_Perdia_signed.env
+112,2025-10-19 09:58:31,Principality of Asturias,Europe/Madrid,-5.922,43.5582,IC005920_Certificado_Perdia_signed.env
+113,2025-10-19 10:43:06,Madrid,Europe/Madrid,-3.711,40.4519,IC001451_Certificado_Perdia_signed.env
+114,2025-10-20 05:31:47,Principality of Asturias,Europe/Madrid,-5.922,43.5582,IC000692_Certificado_Perdia_signed.env
+115,2025-10-20 05:32:26,Principality of Asturias,Europe/Madrid,-5.922,43.5582,IC000692_Certificado_Perdia_signed.env
+116,2025-10-20 05:56:24,Principality of Asturias,Europe/Madrid,-5.922,43.5582,IC000692_Certificado_Perdia_signed.env
+117,2025-10-20 18:45:36,Madrid,Europe/Madrid,-3.709,40.4697,IC014159_Certificado_Perdia_signed.env
+118,2025-10-20 19:50:45,Madrid,Europe/Madrid,-3.6997,40.3907,IC004613_Certificado_Perdia_signed.env
+119,2025-10-20 19:53:45,Madrid,Europe/Madrid,-3.6997,40.3907,IC004614_Certificado_Perdia_signed.env
+120,2025-10-21 13:25:45,Madrid,Europe/Madrid,-3.694,40.4153,IC001250_Certificado_Perdia_signed.env
+121,2025-10-21 13:25:48,Madrid,Europe/Madrid,-3.694,40.4153,IC001250_Certificado_Perdia_signed.env
+122,2025-10-21 18:41:49,Castille and León,Europe/Madrid,-3.6724,42.3468,IC017159_Certificado_Perdia_signed.env
+123,2025-10-21 21:13:07,Madrid,Europe/Madrid,-3.701,40.4328,IC019940_Certificado_Perdia_signed.env
+124,2025-10-22 11:16:36,Castille and León,Europe/Madrid,-4.7064,41.635,IC012936_Certificado_Perdia_signed.env
+125,2025-10-23 07:31:07,Andalusia,Europe/Madrid,-6.235,36.5904,IC021544_Certificado_Perdia_signed.env
+126,2025-10-23 07:32:56,Andalusia,Europe/Madrid,-6.235,36.5904,IC021778_Certificado_Perdia_signed.env
+127,2025-10-23 13:02:38,Castille and León,Europe/Madrid,-4.7064,41.635,IC009695_Certificado_Perdia_signed.env
