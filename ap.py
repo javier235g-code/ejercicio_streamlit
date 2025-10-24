@@ -130,7 +130,7 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
                 # Rellenar con 'Desconocida' para que el groupby funcione
                 df['region'] = df['region'].fillna('Desconocida')
             else:
-                st.info(f"Detectadas {missing_region_mask.sum()} regiones vacías. Rellenando...")
+                st.info(f"Detectadas {missing_region_mask.sum()} regiones vacías. Rellenado")
 
                 try:
                     # 4. Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
@@ -181,7 +181,7 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
 # --- ESTRUCTURA PRINCIPAL DE LA APLICACIÓN ---
 import time
 with st.sidebar:
-    st.title(":open_file_folder: Panel de Control")
+    st.title("🗂️ Panel de Control")
 
     # Definir la consulta y el nombre de la conexión
     MI_CONSULTA = "SELECT * FROM descargas;"
@@ -226,10 +226,8 @@ with st.sidebar:
 
 # --- 3. Análisis y Visualizaciones (Metas 3, 4, 5, 6) ---
 
-st.divider()
-
 # Meta 4: Resumen por Zona
-st.header("Resumen por Región")
+
 
 # Agrupar por 'zona'
 df_zona = df_principal.groupby('region').agg(
@@ -244,9 +242,9 @@ df_zona.rename(columns={'region': 'Región', 'numero_descargas':'Descargas', 'de
 total_descargas_global = df_principal.shape[0]  # Total de filas
 total_unicas_global = df_principal['id_descargado'].nunique()  # Total de IDs únicos
 
-# Mostrar el DataFrame
-st.dataframe(df_zona, hide_index='region', width= "content", use_container_width=True)
-
+st.title("📈 Análisis de Descargas | Certificados AyN")
+st.markdown(":blue[Sistema de Seguimiento]")
+st.page_link("https://dedalogestion.com/ayn/", label="Dédalo", icon="🌎")
 st.markdown("""
 <style>
     [data-testid="stMetricValue"] {
@@ -267,11 +265,19 @@ st.markdown("""
 
 
 col1, col2 = st.columns(2)
-col1.metric("**Total Descargas** :chart_with_upwards_trend:", total_descargas_global, border=True)
-col2.metric("**Total Descargas Únicas** :chart_with_upwards_trend:", total_unicas_global, border=True)
+col1.metric("**Total Descargas** ️", total_descargas_global, border=True)
+col2.metric("**Total Descargas Únicas** ", total_unicas_global, border=True)
+ficheros_totales = 15151
+porcentaje = round((total_unicas_global/ficheros_totales)*100, 2)
+st.progress(porcentaje/100)
+st.text(f"Porcentaje de Ficheros Descargados: {porcentaje}%")
+st.divider()
 
+st.header("Resumen por Región")
+# Mostrar el DataFrame
+st.dataframe(df_zona, hide_index='region', width= "content", use_container_width=True)
 
-st.map(df_principal)
+st.map(df_principal, color='#1b8210')
 
 st.divider()
 
