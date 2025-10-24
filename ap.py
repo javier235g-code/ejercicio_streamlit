@@ -135,8 +135,8 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
                 try:
                     # 4. Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
                     coords = list(zip(
-                        df.loc[missing_region_mask, 'latitud'],
-                        df.loc[missing_region_mask, 'longitud']
+                        df.loc[missing_region_mask, 'lat
+                        df.loc[missing_region_mask, 'lon']
                     ))
 
                     if coords:
