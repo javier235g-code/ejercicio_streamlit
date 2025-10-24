@@ -135,7 +135,7 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
                 try:
                     # 4. Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
                     coords = list(zip(
-                        df.loc[missing_region_mask, 'lat
+                        df.loc[missing_region_mask, 'lat'],
                         df.loc[missing_region_mask, 'lon']
                     ))
 
@@ -179,6 +179,14 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
         return None
 
 # --- ESTRUCTURA PRINCIPAL DE LA APLICACIÓN ---
+import time
+with st.sidebar:
+    with st.echo():
+        st.write("This code will be printed to the sidebar.")
+
+    with st.spinner("Loading..."):
+        time.sleep(5)
+    st.success("Done!")
 
 st.title("Panel de Control")
 
@@ -239,28 +247,44 @@ df_zona = df_principal.groupby('region').agg(
     descargas_unicas=('id_descargado', 'nunique')
 ).reset_index()
 
+df_zona.rename(columns={'region': 'Región', 'numero_descargas':'Descargas', 'descargas_unicas':'Descargas Únicas'}, inplace=True)
 # Calcular totales globales (antes de añadir la fila de total)
 total_descargas_global = df_principal.shape[0]  # Total de filas
 total_unicas_global = df_principal['id_descargado'].nunique()  # Total de IDs únicos
 
-# Crear la fila de total como un DataFrame
-total_row = pd.DataFrame({
-    'Región': ['**Total General**'],  # Nombre para la fila de total
-    'Descargas': [total_descargas_global],
-    'Descargas Únicas': [total_unicas_global]
-})
-
-# Concatenar el resumen por zona con la fila de total
-df_zona_final = pd.concat([df_zona, total_row], ignore_index=True)
-
 # Mostrar el DataFrame
-st.dataframe(df_zona_final, use_container_width=True)
+st.dataframe(df_zona, hide_index='region', width= "content", use_container_width=True)
+
+st.markdown("""
+<style>
+    [data-testid="stMetricValue"] {
+        font-size: 40px;
+        font-weight: bold;  /* Hace el número más grueso */
+        color: #023b61;     /* Color azul (opcional) */
+    }
+
+    /* Intenta varios selectores para la etiqueta */
+
+    [data-testid="stMetric"] [data-testid="stMarkdownContainer"] {
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
+col1, col2 = st.columns(2)
+col1.metric("**Total Descargas** :chart_with_upwards_trend:", total_descargas_global, border=True)
+col2.metric("**Total Descargas Únicas** :chart_with_upwards_trend:", total_unicas_global, border=True)
+
+
+st.map(df_principal)
 
 st.divider()
 
 # Metas 5 y 6: Análisis por Fecha
 st.header("Análisis por Fecha")
-
 # Definir fechas mínimas y máximas para el selector (basado en la columna 'fecha')
 min_date = df_principal['fecha'].min()
 max_date = df_principal['fecha'].max()
@@ -271,8 +295,7 @@ selected_range = st.date_input(
     (min_date, max_date),  # Valor por defecto (rango completo)
     min_value=min_date,
     max_value=max_date,
-    key="date_range_selector"
-)
+    key="date_range_selector")
 
 # Asegurarse de que el selector devolvió un rango válido (inicio y fin)
 if len(selected_range) == 2:
@@ -288,29 +311,28 @@ if len(selected_range) == 2:
     if df_filtrado_fecha.empty:
         st.warning("No hay datos en el rango de fechas seleccionado.")
     else:
+        col1, col2 = st.columns(2)
         # Meta 5 (final): DF de descargas ÚNICAS por fecha
-        st.subheader("Descargas Únicas por Día (en rango)")
-        df_fecha_agg = df_filtrado_fecha.groupby('fecha').agg(
-            numero_descargas_unicas=('id_descargado', 'nunique')
-        ).reset_index()
-
-        st.dataframe(df_fecha_agg, use_container_width=True)
+        with col1:
+            st.subheader("Descargas Únicas por Día (en rango)")
+            df_fecha_agg = df_filtrado_fecha.groupby('fecha').agg(
+                numero_descargas_unicas=('id_descargado', 'nunique')).reset_index()
+            st.dataframe(df_fecha_agg, use_container_width=True)
 
         # Meta 6: Histograma de descargas TOTALES por día
-        st.subheader("Histograma de Descargas Totales por Día (en rango)")
+        with col2:
+            st.subheader("Histograma de Descargas Totales por Día (en rango)")
 
-        # Agregamos para el histograma (contando 'id' totales, no únicos)
-        df_hist = df_filtrado_fecha.groupby('fecha').agg(
-            numero_descargas_totales=('id', 'count')
-        ).reset_index()
+            # Agregamos para el histograma (contando 'id' totales, no únicos)
+            df_hist = df_filtrado_fecha.groupby('fecha').agg(
+            numero_descargas_totales=('id', 'count')).reset_index()
 
-        # Pintar el histograma
-        st.bar_chart(
-            df_hist,
-            x='fecha',
-            y='numero_descargas_totales',
-            use_container_width=True
-        )
+            # Pintar el histograma
+            st.bar_chart(
+               df_hist,
+               x='fecha',
+              y='numero_descargas_totales',
+              use_container_width=True)
 
 else:
     # Caso por si el selector de fecha no devuelve un rango (ej. solo 1 día)
