@@ -181,56 +181,48 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
 # --- ESTRUCTURA PRINCIPAL DE LA APLICACIÓN ---
 import time
 with st.sidebar:
-    with st.echo():
-        st.write("This code will be printed to the sidebar.")
+    st.title(":open_file_folder: Panel de Control")
 
-    with st.spinner("Loading..."):
-        time.sleep(5)
-    st.success("Done!")
+    # Definir la consulta y el nombre de la conexión
+    MI_CONSULTA = "SELECT * FROM descargas;"
+    MI_CONEXION_SECRETS = "db_mysql"  # Debe coincidir con [connections.db_mysql] en secrets.toml
+    ARCHIVO_SALIDA = "data.csv"
 
-st.title("Panel de Control")
+    # --- 1. Botón de Actualización (Lógica existente) ---
+    # Colocamos el botón primero
+    if st.button(f"Actualizar Registros Base de Datos"):
 
-# Definir la consulta y el nombre de la conexión
-MI_CONSULTA = "SELECT * FROM descargas;"
-MI_CONEXION_SECRETS = "db_mysql"  # Debe coincidir con [connections.db_mysql] en secrets.toml
-ARCHIVO_SALIDA = "data.csv"
+        with st.spinner("Ejecutando consulta y actualizando CSV..."):
 
-# --- 1. Botón de Actualización (Lógica existente) ---
-# Colocamos el botón primero
-if st.button(f"Actualizar Registros Base de Datos"):
+            exito = actualizar_csv_con_st_connection(
+                nombre_conexion_st=MI_CONEXION_SECRETS,
+                consulta_sql=MI_CONSULTA,
+                archivo_csv=ARCHIVO_SALIDA)
 
-    with st.spinner("Ejecutando consulta y actualizando CSV..."):
+            if exito:
+             st.success("Proceso completado.")
+             # ¡IMPORTANTE!
+             # Limpiamos la caché de la función 'load_data'.
+             # Esto fuerza a Streamlit a releer el archivo CSV
+             # modificado en la siguiente línea (load_data).
+             st.cache_data.clear()
+            # 'else' (fallo) ya es manejado por la función con st.error
 
-        exito = actualizar_csv_con_st_connection(
-            nombre_conexion_st=MI_CONEXION_SECRETS,
-            consulta_sql=MI_CONSULTA,
-            archivo_csv=ARCHIVO_SALIDA
-        )
+    # --- 2. Carga y Visualización de Datos (NUEVA LÓGICA) ---
 
-        if exito:
-            st.success("Proceso completado.")
-            # ¡IMPORTANTE!
-            # Limpiamos la caché de la función 'load_data'.
-            # Esto fuerza a Streamlit a releer el archivo CSV
-            # modificado en la siguiente línea (load_data).
-            st.cache_data.clear()
-        # 'else' (fallo) ya es manejado por la función con st.error
+    # Mostrar estado de carga y fecha de actualización (Metas 1 y 2)
+    st.subheader("Estado de los Datos Locales")
+    with st.spinner(f"Cargando datos locales desde '{ARCHIVO_SALIDA}'..."):
+       # Intentamos cargar los datos (usará la caché si no se pulsó el botón)
+      df_principal = load_data(ARCHIVO_SALIDA)
 
-# --- 2. Carga y Visualización de Datos (NUEVA LÓGICA) ---
+      # Obtenemos y mostramos la fecha de modificación del archivo
+      last_update = get_last_update_time(ARCHIVO_SALIDA)
+      st.caption(f"Última actualización del fichero: **{last_update}**")
 
-# Mostrar estado de carga y fecha de actualización (Metas 1 y 2)
-st.subheader("Estado de los Datos Locales")
-with st.spinner(f"Cargando datos locales desde '{ARCHIVO_SALIDA}'..."):
-    # Intentamos cargar los datos (usará la caché si no se pulsó el botón)
-    df_principal = load_data(ARCHIVO_SALIDA)
-
-    # Obtenemos y mostramos la fecha de modificación del archivo
-    last_update = get_last_update_time(ARCHIVO_SALIDA)
-    st.caption(f"Última actualización del fichero: **{last_update}**")
-
-# Si la carga falla (ej. no existe el archivo), detenemos la ejecución aquí
-if df_principal is None:
-    st.stop()
+    # Si la carga falla (ej. no existe el archivo), detenemos la ejecución aquí
+    if df_principal is None:
+       st.stop()
 
 # --- 3. Análisis y Visualizaciones (Metas 3, 4, 5, 6) ---
 
