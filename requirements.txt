@@ -1,0 +1,6 @@
+pandas
+streamlit
+sqlalchemy.exc
+os
+datetime
+reverse_geocoder

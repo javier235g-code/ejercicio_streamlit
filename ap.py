@@ -48,24 +48,24 @@ def actualizar_csv_con_st_connection(
                     """)
             return False
 
+        else:
+            # 1. Establecer conexión usando el gestor de Streamlit
+            # Streamlit buscará en secrets.toml la sección [connections.nombre_conexion_st]
+            st.info(f"Conectando a DB MySQL", icon="✅")
+            conn = st.connection(nombre_conexion_st, type="sql")
 
-        # 1. Establecer conexión usando el gestor de Streamlit
-        # Streamlit buscará en secrets.toml la sección [connections.nombre_conexion_st]
-        st.info(f"Intentando conectar a '{nombre_conexion_st}'...")
-        conn = st.connection(nombre_conexion_st, type="sql")
+            # 2. Ejecutar la consulta.
+            # Usamos ttl=0 para deshabilitar el cacheo y asegurar que los datos
+            # sean siempre los más recientes (vital para una "actualización").
+            # Si quisiera cachear los resultados por 10 minutos, usaría ttl=600.
+            df_datos = conn.query(consulta_sql, ttl=0)
 
-        # 2. Ejecutar la consulta.
-        # Usamos ttl=0 para deshabilitar el cacheo y asegurar que los datos
-        # sean siempre los más recientes (vital para una "actualización").
-        # Si quisiera cachear los resultados por 10 minutos, usaría ttl=600.
-        df_datos = conn.query(consulta_sql, ttl=0)
+            # 3. Guardar el DataFrame en el archivo CSV
+            df_datos.to_csv(archivo_csv, index=False, encoding='utf-8')
 
-        # 3. Guardar el DataFrame en el archivo CSV
-        df_datos.to_csv(archivo_csv, index=False, encoding='utf-8')
-
-        # 4. Notificar al usuario del éxito
-        st.toast(f"¡Éxito! '{archivo_csv}' ha sido actualizado correctamente.", icon="✅")
-        return True
+            # 4. Notificar al usuario del éxito
+            st.info(f"¡Éxito! el archivo de datos local ha sido actualizado correctamente.", icon="✅")
+            return True
 
     except OperationalError as e:
         # Error común si la DB no responde, las credenciales son incorrectas
@@ -130,7 +130,7 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
                 # Rellenar con 'Desconocida' para que el groupby funcione
                 df['region'] = df['region'].fillna('Desconocida')
             else:
-                st.info(f"Detectadas {missing_region_mask.sum()} regiones vacías. Rellenado")
+                st.info(f"Detectadas {missing_region_mask.sum()} regiones vacías. Rellenado.")
 
                 try:
                     # 4. Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
@@ -212,7 +212,7 @@ with st.sidebar:
 
     # Mostrar estado de carga y fecha de actualización (Metas 1 y 2)
     st.subheader("Estado de los Datos Locales")
-    with st.spinner(f"Cargando datos locales desde '{ARCHIVO_SALIDA}'..."):
+    with st.spinner(f"Cargando datos en local."):
        # Intentamos cargar los datos (usará la caché si no se pulsó el botón)
       df_principal = load_data(ARCHIVO_SALIDA)
 
@@ -243,8 +243,11 @@ total_descargas_global = df_principal.shape[0]  # Total de filas
 total_unicas_global = df_principal['id_descargado'].nunique()  # Total de IDs únicos
 
 st.title("📈 Análisis de Descargas | Certificados AyN")
-st.markdown(":blue[Sistema de Seguimiento]")
-st.page_link("https://dedalogestion.com/ayn/", label="Dédalo", icon="🌎")
+
+col1, col2 = st.columns(2)
+col1.markdown(":blue[Sistema de Seguimiento]")
+col2.page_link("https://dedalogestion.com/ayn/", label="Dédalo", icon="🟩")
+
 st.markdown("""
 <style>
     [data-testid="stMetricValue"] {
@@ -270,7 +273,7 @@ col2.metric("**Total Descargas Únicas** ", total_unicas_global, border=True)
 ficheros_totales = 15151
 porcentaje = round((total_unicas_global/ficheros_totales)*100, 2)
 st.progress(porcentaje/100)
-st.text(f"Porcentaje de Ficheros Descargados: {porcentaje}%")
+st.text(f"Porcentaje de Ficheros Únicos Descargados: {porcentaje}%")
 st.divider()
 
 st.header("Resumen por Región")
@@ -309,29 +312,26 @@ if len(selected_range) == 2:
     if df_filtrado_fecha.empty:
         st.warning("No hay datos en el rango de fechas seleccionado.")
     else:
-        col1, col2 = st.columns(2)
-        # Meta 5 (final): DF de descargas ÚNICAS por fecha
-        with col1:
-            st.subheader("Descargas Únicas por Día (en rango)")
-            df_fecha_agg = df_filtrado_fecha.groupby('fecha').agg(
-                numero_descargas_unicas=('id_descargado', 'nunique')).reset_index()
-            st.dataframe(df_fecha_agg, use_container_width=True)
-
-        # Meta 6: Histograma de descargas TOTALES por día
-        with col2:
-            st.subheader("Histograma de Descargas Totales por Día (en rango)")
-
-            # Agregamos para el histograma (contando 'id' totales, no únicos)
-            df_hist = df_filtrado_fecha.groupby('fecha').agg(
+        st.subheader("Histograma de Descargas Totales por Día (en rango)")
+        # Agregamos para el histograma (contando 'id' totales, no únicos)
+        df_hist = df_filtrado_fecha.groupby('fecha').agg(
             numero_descargas_totales=('id', 'count')).reset_index()
 
-            # Pintar el histograma
-            st.bar_chart(
-               df_hist,
-               x='fecha',
-              y='numero_descargas_totales',
-              use_container_width=True)
+        # Pintar el histograma
+        st.bar_chart(
+            df_hist,
+            x='fecha',
+            y='numero_descargas_totales',
+            x_label = 'Fecha',
+            y_label = 'Numero de Descargas',
+            use_container_width=True)
+
+        st.subheader("Descargas Únicas por Día (en rango)")
+        df_fecha_agg = df_filtrado_fecha.groupby('fecha').agg(numero_descargas_unicas=('id_descargado', 'nunique')).reset_index()
+        st.dataframe(df_fecha_agg, use_container_width=True)
 
 else:
     # Caso por si el selector de fecha no devuelve un rango (ej. solo 1 día)
     st.info("Por favor, seleccione un rango de fechas válido (inicio y fin).")
+
+st.divider()
