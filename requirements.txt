@@ -3,3 +3,6 @@
 streamlit
 mysql-connector-python
 SQLAlchemy
+pandas
+datetime
+reverse_geocoder
