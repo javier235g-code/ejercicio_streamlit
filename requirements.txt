@@ -1,6 +1,5 @@
-pandas
+# requirements.txt
+# Lista de paquetes Python necesarios para que la aplicación se ejecute correctamente
 streamlit
-sqlalchemy.exc
-os
-datetime
-reverse_geocoder
+mysql-connector-python
+SQLAlchemy
