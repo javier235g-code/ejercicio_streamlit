@@ -312,7 +312,7 @@ if len(selected_range) == 2:
     if df_filtrado_fecha.empty:
         st.warning("No hay datos en el rango de fechas seleccionado.")
     else:
-        st.subheader("Histograma de Descargas Totales por Día (en rango)")
+        st.subheader("Histograma de Descargas Totales por Día.")
         # Agregamos para el histograma (contando 'id' totales, no únicos)
         df_hist = df_filtrado_fecha.groupby('fecha').agg(
             numero_descargas_totales=('id', 'count')).reset_index()
@@ -326,8 +326,9 @@ if len(selected_range) == 2:
             y_label = 'Numero de Descargas',
             use_container_width=True)
 
-        st.subheader("Descargas Únicas por Día (en rango)")
+        st.subheader("Descargas Únicas por Día.")
         df_fecha_agg = df_filtrado_fecha.groupby('fecha').agg(numero_descargas_unicas=('id_descargado', 'nunique')).reset_index()
+        df_fecha_agg.rename({'fecha': 'Fecha', 'numero_descargas_unicas': 'Descargas'}, axis=1, inplace=True)
         st.dataframe(df_fecha_agg, use_container_width=True)
 
 else:
