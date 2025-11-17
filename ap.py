@@ -30,7 +30,7 @@ def actualizar_csv_con_st_connection(
     """
 
     try:
-        # NUEVO: Verificar que exista la configuración en secrets
+        # Verificar que exista la configuración en secrets
         if nombre_conexion_st not in st.secrets.get("connections", {}):
             st.error(f"❌ No se encontró '[connections.{nombre_conexion_st}]' en secrets.toml")
             st.info("""
@@ -49,27 +49,24 @@ def actualizar_csv_con_st_connection(
             return False
 
         else:
-            # 1. Establecer conexión usando el gestor de Streamlit
+            # Establecer conexión usando el gestor de Streamlit
             # Streamlit buscará en secrets.toml la sección [connections.nombre_conexion_st]
             st.info(f"Conectando a DB MySQL", icon="✅")
             conn = st.connection(nombre_conexion_st, type="sql")
 
-            # 2. Ejecutar la consulta.
-            # Usamos ttl=0 para deshabilitar el cacheo y asegurar que los datos
-            # sean siempre los más recientes (vital para una "actualización").
-            # Si quisiera cachear los resultados por 10 minutos, usaría ttl=600.
+            # Ejecutar la consulta.
+            # Usamos ttl=0 para deshabilitar el cacheo y asegurar que los datos sean siempre los más recientes.
             df_datos = conn.query(consulta_sql, ttl=0)
 
-            # 3. Guardar el DataFrame en el archivo CSV
+            # Guardar el DataFrame en el archivo CSV
             df_datos.to_csv(archivo_csv, index=False, encoding='utf-8')
 
-            # 4. Notificar al usuario del éxito
+            # Notificar al usuario del éxito
             st.info(f"¡Éxito! el archivo de datos local ha sido actualizado correctamente.", icon="✅")
             return True
 
     except OperationalError as e:
-        # Error común si la DB no responde, las credenciales son incorrectas
-        # o la consulta SQL tiene un error de sintaxis o tabla no encontrada.
+        # Error común si la DB no responde, las credenciales son incorrectas o la consulta SQL tiene un error de sintaxis o tabla no encontrada.
         st.error(f"Error de Conexión/SQL (OperationalError): {e}")
         return False
 
@@ -80,7 +77,7 @@ def actualizar_csv_con_st_connection(
         return False
 
     except Exception as e:
-        # 8. Capturar cualquier otro error inesperado
+        # Capturar cualquier otro error inesperado
         st.error(f"Error inesperado durante la actualización: {e}")
         return False
 
@@ -103,7 +100,7 @@ def get_last_update_time(archivo_csv: str) -> str:
 
 
 @st.cache_data  # Usamos cache de Streamlit
-def load_data(archivo_csv: str): #-> pd.DataFrame | None:
+def load_data(archivo_csv: str) -> pd.DataFrame | None:
     """
     Carga y procesa el archivo CSV local.
     Se cachea para mejorar el rendimiento en interacciones (como filtros).
@@ -115,15 +112,14 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
         if df.empty:
             st.warning("El archivo CSV está vacío.")
             return None
-        # 1. Identificar filas donde 'region' está vacía (NaN)
-        # (usamos .isna() que detecta NaN, y .fillna('') por si acaso)
+        # Identificar filas donde 'region' está vacía (NaN) (usamos .isna() que detecta NaN, y .fillna('') por si acaso)
         df['region'] = df['region'].fillna(pd.NA)
         missing_region_mask = df['region'].isna()
 
-        # 2. Comprobar si hay alguna región que rellenar
+        # Comprobar si hay alguna región que rellenar
         if missing_region_mask.any():
 
-            # 3. Comprobar si la biblioteca 'reverse_geocoder' está disponible
+            # Comprobar si la biblioteca 'reverse_geocoder' está disponible
             if rg is None:
                 st.error("Biblioteca 'reverse_geocoder' no encontrada.")
                 st.warning("Para rellenar regiones vacías, instala la biblioteca: pip install reverse_geocoder")
@@ -133,21 +129,20 @@ def load_data(archivo_csv: str): #-> pd.DataFrame | None:
                 st.info(f"Detectadas {missing_region_mask.sum()} regiones vacías. Rellenado.")
 
                 try:
-                    # 4. Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
+                    # Preparar las coordenadas (lat, lon) SOLO de las filas necesarias
                     coords = list(zip(
                         df.loc[missing_region_mask, 'lat'],
                         df.loc[missing_region_mask, 'lon']
                     ))
 
                     if coords:
-                        # 5. Realizar la búsqueda (es offline y rápida)
+                        # Realizar la búsqueda (es offline y rápida)
                         results = rg.search(coords)  # Retorna una lista de dicts
 
-                        # 6. Extraer el nombre de la región ('admin1' en España es la Comunidad Autónoma)
-                        # ej: 'Madrid', 'Andalusia', 'Catalonia'
+                        # Extraer el nombre de la región ('admin1' en España es la Comunidad Autónoma) ej: 'Madrid'
                         filled_regions = [res['admin1'] for res in results]
 
-                        # 7. Asignar los nuevos valores de vuelta al DataFrame
+                        # Asignar los nuevos valores de vuelta al DataFrame
                         df.loc[missing_region_mask, 'region'] = filled_regions
 
                 except Exception as e:
@@ -188,8 +183,8 @@ with st.sidebar:
     MI_CONEXION_SECRETS = "db_mysql"  # Debe coincidir con [connections.db_mysql] en secrets.toml
     ARCHIVO_SALIDA = "data.csv"
 
-    # --- 1. Botón de Actualización (Lógica existente) ---
-    # Colocamos el botón primero
+    # Botón de Actualización (Lógica existente)
+
     if st.button(f"Actualizar Registros Base de Datos"):
 
         with st.spinner("Ejecutando consulta y actualizando CSV..."):
@@ -206,11 +201,11 @@ with st.sidebar:
              # Esto fuerza a Streamlit a releer el archivo CSV
              # modificado en la siguiente línea (load_data).
              st.cache_data.clear()
-            # 'else' (fallo) ya es manejado por la función con st.error
 
-    # --- 2. Carga y Visualización de Datos (NUEVA LÓGICA) ---
 
-    # Mostrar estado de carga y fecha de actualización (Metas 1 y 2)
+    # Carga y Visualización de Datos
+
+    # Mostrar estado de carga y fecha de actualización
     st.subheader("Estado de los Datos Locales")
     with st.spinner(f"Cargando datos en local."):
        # Intentamos cargar los datos (usará la caché si no se pulsó el botón)
@@ -224,9 +219,9 @@ with st.sidebar:
     if df_principal is None:
        st.stop()
 
-# --- 3. Análisis y Visualizaciones (Metas 3, 4, 5, 6) ---
+# --- Análisis y Visualizaciones ---
 
-# Meta 4: Resumen por Zona
+# Resumen por Zona
 
 
 # Agrupar por 'zona'
@@ -284,13 +279,14 @@ st.map(df_principal, color='#1b8210')
 
 st.divider()
 
-# Metas 5 y 6: Análisis por Fecha
+# Análisis por Fecha
+
 st.header("Análisis por Fecha")
 # Definir fechas mínimas y máximas para el selector (basado en la columna 'fecha')
 min_date = df_principal['fecha'].min()
 max_date = df_principal['fecha'].max()
 
-# Meta 5 (parcial): Calendario para seleccionar rango
+# Calendario para seleccionar rango
 selected_range = st.date_input(
     "Seleccione un rango de fechas",
     (min_date, max_date),  # Valor por defecto (rango completo)
